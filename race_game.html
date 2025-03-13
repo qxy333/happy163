@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>北京赛车博彩游戏</title>
+    <style>
+        body { text-align: center; font-family: Arial, sans-serif; }
+        .track { width: 90%; margin: 20px auto; border: 2px solid #000; position: relative; }
+        .car { width: 50px; position: absolute; left: 0; transition: left 3s linear; }
+        .bet-section { margin: 20px; }
+        .bet-buttons button { margin: 5px; padding: 10px; font-size: 16px; }
+    </style>
+</head>
+<body>
+    <h1>北京赛车博彩游戏</h1>
+    <div class="bet-section">
+        <label for="bet">下注金额：</label>
+        <input type="number" id="bet" value="0.02" min="0.02" max="20000" step="0.01">
+        <label for="betType">选择下注类型：</label>
+        <select id="betType">
+            <option value="定位胆">定位胆</option>
+            <option value="单双">单双</option>
+            <option value="大小">大小</option>
+        </select>
+        <div class="bet-buttons">
+            <p>选择号码：</p>
+            <button onclick="selectNumber(1)">1</button>
+            <button onclick="selectNumber(2)">2</button>
+            <button onclick="selectNumber(3)">3</button>
+            <button onclick="selectNumber(4)">4</button>
+            <button onclick="selectNumber(5)">5</button>
+            <button onclick="selectNumber(6)">6</button>
+            <button onclick="selectNumber(7)">7</button>
+            <button onclick="selectNumber(8)">8</button>
+            <button onclick="selectNumber(9)">9</button>
+            <button onclick="selectNumber(10)">10</button>
+        </div>
+        <button onclick="placeBet()">下注</button>
+    </div>
+    <h2 id="result"></h2>
+    <script>
+        let selectedNumber = null;
+
+        function selectNumber(num) {
+            selectedNumber = num;
+            alert("你选择的号码是：" + num);
+        }
+
+        function placeBet() {
+            if (selectedNumber === null) {
+                alert("请选择一个号码进行下注！");
+                return;
+            }
+            startRace();
+        }
+
+        function startRace() {
+            let betAmount = parseFloat(document.getElementById('bet').value);
+            let betType = document.getElementById('betType').value;
+            let raceEnd = 800;
+            
+            let results = [];
+            for (let i = 1; i <= 10; i++) {
+                let distance = Math.random() * raceEnd + 200;
+                results.push({ car: i, distance });
+            }
+            
+            setTimeout(() => {
+                results.sort((a, b) => b.distance - a.distance);
+                let winner = results[0].car;
+                document.getElementById('result').innerText = '🏆 胜利者：' + winner;
+                
+                let win = false;
+                if (betType === "定位胆" && selectedNumber === winner) {
+                    win = true;
+                } else if (betType === "单双" && ((winner % 2 === 0 && selectedNumber === 2) || (winner % 2 !== 0 && selectedNumber === 1))) {
+                    win = true;
+                } else if (betType === "大小" && ((winner > 5 && selectedNumber === 1) || (winner <= 5 && selectedNumber === 0))) {
+                    win = true;
+                }
+                
+                if (win) {
+                    alert('恭喜！你赢得 ' + (betAmount * 2) + ' 金额！');
+                } else {
+                    alert('很遗憾，你输了 ' + betAmount + ' 金额。');
+                }
+            }, 3000);
+        }
+        
+        function startContinuousRace() {
+            setInterval(startRace, 60000); // 每 60 秒自动开奖一次
+        }
+        
+        window.onload = startContinuousRace; // 页面加载时自动开始连续开奖
+    </script>
+</body>
+</html>
